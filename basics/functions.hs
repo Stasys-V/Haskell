@@ -74,6 +74,86 @@ capitalize (x:xs) = toUpper x : xs
 title :: String -> String
 title = unwords . map capitalize . words
 
+--Write a function doubleAll that takes a list of integers and returns a new list with each element doubled, 
+--without using any explicit recursion (use other functions to compose this)
+doubleAll :: [Int] -> [Int]
+doubleAll xs = map double xs
+  where double x = 2 * x
+
+--Implement the absolute value function myAbs using a conditional expression
+myAbs :: Int -> Int
+myAbs x = if x >= 0 then x else -x
+
+-- Write a function safeTail that returns the tail of a list if it's non-empty, otherwise returns an empty list. Use a conditional expression.
+safeTail :: [a] -> [a]
+safeTail xs = if null xs then [] else tail xs
+
+--Create a function signClassify that returns a string saying either the number is "positive", "negative", "zero"
+signClassify :: Int -> String
+signClassify x = if x > 0 then "Positive" else if x == 0 then "Zero" else "Negative"
+
+--Reimplement myAbs using guarded equations.
+myAbs2 :: Int -> Int
+myAbs2 x 
+  | x >= 0 = x
+  | otherwise = -x
+
+--Write a function category that takes an age and returns age group
+category :: Int -> String
+category age 
+  | age < 13 = "Child"
+  | 13 <= age && age < 20 = "Teenager"
+  | otherwise = "Adult"
+
+--Create a guarded version of signClassify
+signClassify2 :: Int -> String
+signClassify2 number
+  | number > 0 = "Positive"
+  | number == 0 = "Zero"
+  | otherwise = "Negative"
+
+--Implement and (boolean conjunction) as a function myAnd using pattern matching on lists
+myAnd :: [Bool] -> Bool
+myAnd [] = True
+myAnd (x:xs) = x && myAnd xs
+
+--Write a function addPairs that takes a list of pairs and returns a list of their sums
+addPairs :: Num a => [(a, a)] -> [a]
+addPairs [] = []
+addPairs ((x, y): xs) = (x + y) : addPairs xs
+
+--Implement init (returns all but last element) yourself as myInit using pattern matching. Handle empty list case appropriately.
+myInit :: [a] -> [a]
+myInit [] = []
+myInit [a] = []
+myInit (x:xs) = x : myInit xs
+
+--Create a function isSorted that checks if a list is sorted in non-decreasing order using pattern matching.
+isSorted :: Ord a => [a] -> Bool
+isSorted [] = True
+isSorted [_] = True
+isSorted (x:y:xs) = x <= y && isSorted(y:xs)
+
+--Write a function countTrue that counts how many True values are in a list using pattern matching.
+countTrue :: [Bool] -> Int
+countTrue [] = 0
+countTrue (True:xs) = 1 + countTrue xs
+countTrue (False:xs) = countTrue xs
+
+  -- Use a lambda with foldr to implement the product of a list.
+listProduct :: Num a => [a] -> a 
+listProduct [] = 1
+listProduct xs = foldr ( \x acc -> acc * x) 1 xs
+
+-- Write a function applyTwice that takes a function and a value, and applies the function twice to the value, using a lambda to demonstrate function composition.
+applyTwice :: (a -> a) -> a -> a
+applyTwice f = \x -> f (f x)
+
+-- Write a function applyOp that takes an operator (as a function), two arguments, and returns the result, 
+-- then demonstrate using operator sections to create specialized versions for addition and multiplication.
+applyOp :: (a -> a -> a) -> a -> a -> a
+applyOp op = op
+
 main :: IO ()
 main = do
 
@@ -92,3 +172,25 @@ main = do
   print (rotate ("something", 69, 'L'))
   print (capitalize "somebODy")
   print (title "today is a sunny, hot day")
+  print (doubleAll [5, 4, 3])
+  print (myAbs 0)
+  print (safeTail [5, 4, 3])
+  print (safeTail ([] :: [Int]) )
+  print (signClassify 5)
+  print (myAbs2 (-6))
+  print (category 12)
+  print (category 15)
+  print (category 30)
+  print ( signClassify2 4 , signClassify2 0 , signClassify2 (-2) )
+  print (myAnd [True, True] , myAnd [True, False] , myAnd [False, True, False, True])
+  print (addPairs [(4,3),(5,6),(9, 0)])
+  print (myInit [5, 4, 3], myInit [] :: [Int])
+  print (countTrue[], countTrue[True], countTrue[True, False, False, True], countTrue[False])
+  print (isSorted [1,2,3], isSorted ([] :: [Int]), isSorted [5,4] )
+  ---- Rewrite the expression map (*2) [1,2,3] using a lambda expression instead of the section (*2).
+  print (map (\x -> 2 * x) [1, 2, 3])
+  print (listProduct [1, 2, 4, 5])
+  print (applyTwice (+1) 4)
+  print (map (+3) [1,2,3])
+  print (filter (<10) [1, 5, 11, 10])
+  print (applyOp (-) 7 2, applyOp (*) 4 3)
