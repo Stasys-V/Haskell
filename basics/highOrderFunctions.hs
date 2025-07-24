@@ -40,7 +40,7 @@ countIf f (x:xs)
     | f x = 1 + countIf f xs
     | otherwise = countIf f xs
 
--- Functions such as: sum, product, and, or, map, length implemented with foldr
+-- Functions such as: sum, product, and, or, map, length, filter implemented with foldr
 mySum :: Num a => [a] -> a 
 mySum = foldr (+) 0
 
@@ -57,7 +57,33 @@ myMap2 :: (a -> b) -> [a] -> [b]
 myMap2 f = foldr (\x acc -> f x : acc) [] 
 
 myLength :: [a] -> Int
-myLength xs = foldr (\_ acc -> acc + 1 ) 0 xs
+myLength = foldr (\_ acc -> acc + 1 ) 0 
+
+myFilterFoldr :: (a -> Bool) -> [a] -> [a]
+myFilterFoldr f = foldr (\x acc -> if f x then x : acc else acc) []
+
+-- Implement foldl from scratch
+myFoldl :: (a -> b -> b) -> b -> [a] -> b
+myFoldl _ v [] = v
+myFoldl f v (x:xs) = myFoldl f (f x v) xs
+
+-- Stimulate fold using foldr 
+foldll :: (a -> b -> b) -> b -> [a] -> b
+foldll f v xs = foldr (\x g acc -> g (f x acc)) id xs v
+
+-- Implement reverse with foldl
+myReverse :: [a] -> [a]
+myReverse = foldl (flip(:)) []
+
+-- Function which composes a list of functions and applies them to an argument
+composeList :: [a -> a] -> (a -> a)
+composeList = foldr (.) id
+
+-- Function which applies a function n times
+applyN :: Int -> (a -> a) -> a -> a
+applyN n f x 
+    | n > 0 = applyN (n - 1) f (f x)
+    | otherwise = x
 
 
 main :: IO()
@@ -78,10 +104,16 @@ main = do
     print(myOr[True, False], myOr[False, False])
     print(myMap2 (*2) [1,2,3,4])
     print(myLength "Hello!")
+    print(myFilterFoldr (==2) [1..6], myFilterFoldr odd [1,2,3], myFilterFoldr (/= ' ') "H a s k e l l")
+    print(myFoldl (+) 0 [1,2,3,4], foldll (+) 0 [1,2,3,4])
+    print(myReverse "abcdef")
+    print(composeList [(+2), (*2), (*2)] 2)
+    print(applyN 5 (+1) 1)
+
     
     ----------------------------------------------
     -- Basic lambda expressions
-
+    putStrLn "\nLAMBDA EXPESSIONS \n"
     print( (\x -> x) "This always returns the same argument, which was passed onto it")
     print( (\_ -> 4) "This always returns the same value regardless of what you pass to it")
 
@@ -115,6 +147,5 @@ main = do
 
     -- Lambda expression which takes a list of lists and concatenates them. List must have at least 2 elements in order to be concatenated
     print( (\xss -> concat (filter (\xs -> length xs > 1) xss) )  [[0,1],[2],[3,4,5]])
-
 
     ------------------------------------------
